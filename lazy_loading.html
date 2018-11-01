@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>路由懒加载</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://cdn.bootcss.com/require.js/2.3.6/require.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Hello App!</h1>
+        <p>
+          <router-link to="/user">Go to User</router-link>
+        </p>
+        <router-view></router-view>
+    </div>
+    <script>
+    const router = new VueRouter({
+        routes: [
+            // 动态路径参数 以冒号开头
+            {
+                path: '/user',
+                /*component: function() {
+                    return new Promise(function(resolve) {
+                        setTimeout(function() {
+                            const User = {
+                                name: 'User',
+                                template: '<div>User</div>'
+                            }
+                            resolve(User);
+                        }, 1000);
+                    })
+                }*/
+                component: resolve => require(['./User.js'], resolve)
+            }
+        ]
+    })
+
+    const app = new Vue({
+        router
+    }).$mount('#app')
+
+    </script>
+</body>
+</html>

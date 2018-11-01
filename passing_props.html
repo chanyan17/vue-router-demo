@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动态路由配置</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Hello App!</h1>
+        <p>
+          <router-link to="/user/foo">Go to User Foo</router-link>
+          <router-link to="/user/bar">Go to User Bar</router-link>
+        </p>
+        <router-view></router-view>
+        <router-view name="sidebar"></router-view>
+    </div>
+    <script>
+    const User = {
+        name: 'User',
+        props: ['id'],
+        template: '<div>User {{ id }}</div>'
+    }
+
+    const Sidebar = {
+        name: 'Sidebar',
+        props: ['id'],
+        template: '<div>Sidebar {{ id }}</div>'
+    }
+
+    const router = new VueRouter({
+        routes: [
+            {
+                path: '/user/:id',
+                components: {
+                    default: User,
+                    sidebar: Sidebar
+                },
+                props: { default: true, sidebar: false }
+            }
+        ]
+    })
+
+    const app = new Vue({
+        router
+    }).$mount('#app')
+
+    </script>
+</body>
+</html>

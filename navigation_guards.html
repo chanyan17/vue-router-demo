@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动态路由配置</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>Hello App!</h1>
+        <p>
+            <!-- 当使用路由参数时，例如从 /user/foo 导航到 /user/bar，原来的组件实例会被复用 -->
+            <router-link to="/user/foo">Go to User Foo</router-link>
+            <router-link to="/user/bar">Go to User Bar</router-link>
+            <router-link to="/other">Go to Other</router-link>
+        </p>
+        <router-view></router-view>
+    </div>
+    <script>
+    const User = {
+        name: 'User',
+        template: '<div>User {{ $route.params.id }}</div>',
+        beforeRouteEnter (to, from, next) {
+            next(vm => {
+                // 不！能！获取组件实例 `this`
+                // 通过 `vm` 访问组件实例
+                console.log(vm);
+            })
+        },
+        beforeRouteUpdate (to, from, next) {
+            // 可以访问组件实例 `this`
+            console.log(this);
+            next();
+        },
+        beforeRouteLeave (to, from , next) {
+            // 可以访问组件实例 `this`
+            console.log(this);
+            const answer = window.confirm('Do you really want to leave? you have unsaved changes!')
+            if (answer) {
+                next()
+            } else {
+                next(false)
+            }
+        }
+    }
+    const Other = {
+        template: '<div>Other</div>',
+    }
+
+    const router = new VueRouter({
+        routes: [
+            // 动态路径参数 以冒号开头
+            { path: '/user/:id', component: User },
+            { path: '/other', component: Other}
+        ]
+    })
+
+    const app = new Vue({
+        router
+    }).$mount('#app')
+
+    </script>
+</body>
+</html>

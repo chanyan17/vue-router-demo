@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>命名视图</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <style>
+        .top {
+            height: 100px;
+            background-color: aquamarine;
+        }
+        .middle {
+            height: 300px;
+            background-color: coral;
+        }
+        .bottom {
+            height: 100px;
+            background-color:deepskyblue;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <router-view class="top"></router-view>
+        <router-view class="middle" name="a"></router-view>
+        <router-view class="bottom" name="b"></router-view>
+    </div>
+    <script>
+    const Top = { template: '<div>I am Top</div>' }
+    const Middle = { template: '<div>I am Middle</div>' }
+    const Bottom = { template: '<div>I am Bottom</div>' }
+    const router = new VueRouter({
+        routes: [
+            { 
+                path: '/',
+                components: {
+                    default: Top,
+                    a: Middle,
+                    b: Bottom
+                }
+            }
+        ]
+    })
+
+    const app = new Vue({
+        router
+    }).$mount('#app')
+
+    </script>
+</body>
+</html>

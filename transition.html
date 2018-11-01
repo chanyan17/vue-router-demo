@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>过渡动效</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <style>
+    .slide-right-enter-active,
+    .slide-right-leave-active,
+    .slide-left-enter-active,
+    .slide-left-leave-active {
+        will-change: transform;
+        transition: all 500ms;
+        position: absolute;
+    }
+    .slide-right-enter {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
+    }
+    .slide-right-leave-active {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    .slide-left-enter {
+        opacity: 0;
+        transform: translate3d(100%, 0, 0);
+    }
+    .slide-left-leave-active {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0);
+    }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Hello App!</h1>
+        <p>
+          <router-link to="/user/foo">Go to Foo</router-link>
+          <router-link to="/user/bar">Go to Bar</router-link>
+        </p>
+        <transition name="fade" mode="out-in">
+            <router-view></router-view>
+        </transition>
+    </div>
+    <script>
+    const User = {
+        name: 'User',
+        data() {
+            return {
+                transitionName: 'slide-left'
+            }
+        },
+        template: `
+            <div>
+                <h1>User</h1>
+                <transition :name="transitionName">
+                    <router-view></router-view>
+                </transition>
+            </div>
+        `,
+        watch: {
+            '$route' (to, from) {
+                const toDepth = to.path.split('/').length
+                const fromDepth = from.path.split('/').length
+                this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+                console.log(this.transitionName);
+            }
+        },
+        beforeRouteUpdate (to, from, next) {
+            console.log(to);
+            console.log(from);
+            next();
+        }
+    }
+    const Foo = {
+        template: `<div>foo</div>`
+    }
+
+    const Bar = {
+        template: `<div>bar</div>`
+    }
+
+    const router = new VueRouter({
+        routes: [
+            {
+                path: '/user',
+                component: User,
+                children: [
+                    { name: 'foo', path: 'foo', component: Foo },
+                    { name: 'bar', path: 'bar', component: Bar }
+                ]
+            }
+        ]
+    })
+
+    const app = new Vue({
+        router
+    }).$mount('#app')
+
+    </script>
+</body>
+</html>
